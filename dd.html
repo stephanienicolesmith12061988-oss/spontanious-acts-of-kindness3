@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spontaneous Acts of Kindness</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Nosifer&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(120deg, #8e44ad, #3498db, #ff6b81);
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background: linear-gradient(90deg, #9b59b6, #2980b9, #ff6b81);
+    padding: 15px;
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    font-style: italic;
+    text-decoration: underline;
+    color: #4b0082;
+    font-family: 'Nosifer', cursive;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+  }
+  .container { padding: 20px; max-width: 900px; margin: auto; }
+  input, textarea, button, select { padding: 8px; margin: 5px 0; border-radius: 5px; border: none; }
+  input, textarea, select { width: 100%; }
+  button { background: #ff6b81; color: #ffffff; cursor: pointer; font-weight: bold; }
+  button:hover { opacity: 0.85; }
+  .hidden { display: none; }
+  .post, .photoItem, .videoItem { background: rgba(255,255,255,0.1); padding: 10px; margin: 10px 0; border-radius: 8px; }
+  .message { background: rgba(255,255,255,0.05); padding: 5px; margin: 5px 0; border-radius: 5px; }
+  #tabMenu button { margin-right: 10px; }
+  h2, h3 { color: #ffffff; }
+  hr { border: 1px solid rgba(255,255,255,0.3); }
+  #photoGallery, #videoGallery { display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px; }
+  img.profile { width:50px; height:50px; border-radius:50%; vertical-align:middle; margin-right:10px; }
+  #coverPhoto { width:100%; height:150px; object-fit:cover; border-radius:8px; margin-bottom:10px; }
+</style>
+</head>
+<body>
+<header>Spontaneous Acts of Kindness</header>
+
+<div class="container">
+  <!-- Login/Register Page -->
+  <div id="loginPage">
+    <h2>Login / Register</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <label>Profile Picture:</label>
+    <input type="file" id="profilePicInput" accept="image/*">
+    <label>Cover Photo:</label>
+    <input type="file" id="coverPhotoInput" accept="image/*">
+    <button id="loginBtn">Login</button>
+    <button id="registerBtn">Register</button>
+    <p id="authMsg"></p>
+  </div>
+
+  <!-- Main Page -->
+  <div id="mainPage" class="hidden">
+    <img id="coverPhoto" src="">
+    <h2>Welcome, <span id="userWelcome"></span>!</h2>
+
+    <h3>Platform Rules:</h3>
+    <ul>
+      <li>No bullying or harassment</li>
+      <li>No spam, scams, or fraudulent links</li>
+      <li>No self-promotion or advertising</li>
+      <li>No offensive language or content</li>
+      <li>Respect others’ privacy</li>
+      <li>All posts must follow kindness guidelines</li>
+      <li>Admins approve all posts</li>
+    </ul>
+    <hr>
+
+    <!-- Tabs -->
+    <div id="tabMenu">
+      <button data-tab="feedTab">Feed</button>
+      <button data-tab="messagesTab">Messages</button>
+      <button data-tab="membersTab">Members</button>
+      <button data-tab="photosTab">Photos</button>
+      <button data-tab="videosTab">Videos</button>
+      <button data-tab="insightsTab" id="insightsTabBtn" class="hidden">Insights</button>
+    </div>
+
+    <!-- Feed -->
+    <div id="feedTab">
+      <h3>Create a Post</h3>
+      <textarea id="postContent" placeholder="What's on your mind?"></textarea>
+      <input type="file" id="postImage" accept="image/*">
+      <button id="submitPost">Submit Post</button>
+      <div id="posts"></div>
+    </div>
+
+    <!-- Messages -->
+    <div id="messagesTab" class="hidden">
+      <h3>Private Messaging</h3>
+      <select id="messageRecipient"></select>
+      <textarea id="messageContent" placeholder="Write your message..."></textarea>
+      <button id="sendMessageBtn">Send Message</button>
+      <div id="messageInbox"></div>
+    </div>
+
+    <!-- Members -->
+    <div id="membersTab" class="hidden">
+      <h3>Members</h3>
+      <div id="memberList"></div>
+    </div>
+
+    <!-- Photo Collections -->
+    <div id="photosTab" class="hidden">
+      <h3>Photo Collections</h3>
+      <input type="file" id="photoFile" accept="image/*">
+      <input type="text" id="photoCaption" placeholder="Add a caption (optional)">
+      <button id="uploadPhotoBtn">Upload Photo</button>
+      <div id="photoGallery"></div>
+    </div>
+
+    <!-- Video Collections -->
+    <div id="videosTab" class="hidden">
+      <h3>Video Gallery</h3>
+      <input type="file" id="videoFile" accept="video/*">
+      <input type="text" id="videoCaption" placeholder="Add a caption (optional)">
+      <button id="uploadVideoBtn">Upload Video</button>
+      <div id="videoGallery"></div>
+    </div>
+
+    <!-- Insights -->
+    <div id="insightsTab" class="hidden">
+      <h3>Insights</h3>
+      <div id="insights"></div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="hidden">
+      <h3>Admin Panel</h3>
+      <h4>Pending Posts</h4>
+      <div id="pendingPosts"></div>
+      <h4>Manage Admins</h4>
+      <select id="promoteUserSelect"></select>
+      <button id="promoteAdminBtn">Promote to Admin</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Data storage
+  let users = JSON.parse(localStorage.getItem('users')) || [];
+  let posts = JSON.parse(localStorage.getItem('posts')) || [];
+  let photos = JSON.parse(localStorage.getItem('photos')) || [];
+  let videos = JSON.parse(localStorage.getItem('videos')) || [];
+  let currentUser = null;
+
+  const loginPage = document.getElementById('loginPage');
+  const mainPage = document.getElementById('mainPage');
+  const authMsg = document.getElementById('authMsg');
+  const userWelcome = document.getElementById('userWelcome');
+  const coverPhotoEl = document.getElementById('coverPhoto');
+
+  const saveUsers = ()=>localStorage.setItem('users', JSON.stringify(users));
+  const savePosts = ()=>localStorage.setItem('posts', JSON.stringify(posts));
+  const savePhotos = ()=>localStorage.setItem('photos', JSON.stringify(photos));
+  const saveVideos = ()=>localStorage.setItem('videos', JSON.stringify(videos));
+
+  // Default admin
+  if(!users.find(u=>u.username==='stephaniensmith12688')){
+    users.push({username:'stephaniensmith12688', password:'NinjaGirl555:)', isAdmin:true, messages:[], profilePic:'', coverPhoto:''});
+    saveUsers();
+  }
+
+  function showMainPage(user){
+    currentUser = user;
+    loginPage.classList.add('hidden');
+    mainPage.classList.remove('hidden');
+    userWelcome.textContent = user.username;
+    coverPhotoEl.src = user.coverPhoto || '';
+    if(user.isAdmin) document.getElementById('adminPanel').classList.remove('hidden');
+    if(user.isAdmin) document.getElementById('insightsTabBtn').classList.remove('hidden');
+    renderPosts();
+    renderPendingPosts();
+    updateMessageRecipients();
+    renderInbox();
+    renderMembers();
+    renderPhotos();
+    renderVideos();
+    renderInsights();
+  }
+
+  // Auto-login admin
+  const adminUser = users.find(u=>u.username==='stephaniensmith12688');
+  if(adminUser) showMainPage(adminUser);
+
+  // Upload profile & cover photos
+  document.getElementById('profilePicInput').addEventListener('change', e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=ev=>{ if(currentUser) currentUser.profilePic=ev.target.result; saveUsers(); renderMembers(); };
+    r.readAsDataURL(f);
+  });
+  document.getElementById('coverPhotoInput').addEventListener('change', e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=ev=>{ if(currentUser) currentUser.coverPhoto=ev.target.result; saveUsers(); coverPhotoEl.src=currentUser.coverPhoto; };
+    r.readAsDataURL(f);
+  });
+
+  // Login/Register
+  document.getElementById('loginBtn').onclick = ()=>{
+    const uname=document.getElementById('username').value.trim();
+    const pwd=document.getElementById('password').value.trim();
+    const user=users.find(u=>u.username===uname && u.password===pwd);
+    if(!user){ authMsg.textContent="Invalid login"; return;}
+    showMainPage(user);
+  }
+
+  document.getElementById('registerBtn').onclick = ()=>{
+    const uname=document.getElementById('username').value.trim();
+    const pwd=document.getElementById('password').value.trim();
+    if(!uname||!pwd){ authMsg.textContent="Enter username & password"; return; }
+    if(users.find(u=>u.username===uname)){ authMsg.textContent="Username taken"; return; }
+    const profilePicInput=document.getElementById('profilePicInput').files[0];
+    const coverPhotoInput=document.getElementById('coverPhotoInput').files[0];
+    const newUser={username:uname,password:pwd,isAdmin:false,messages:[],profilePic:'',coverPhoto:''};
+    if(profilePicInput){ const r=new FileReader(); r.onload=ev=>{ newUser.profilePic=ev.target.result; saveUsers(); }; r.readAsDataURL(profilePicInput);}
+    if(coverPhotoInput){ const r=new FileReader(); r.onload=ev=>{ newUser.coverPhoto=ev.target.result; saveUsers(); }; r.readAsDataURL(coverPhotoInput);}
+    users.push(newUser); saveUsers();
+    showMainPage(newUser);
+  };
+
+  // Tabs
+  document.querySelectorAll('#tabMenu button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('#feedTab, #messagesTab, #membersTab, #photosTab, #videosTab, #insightsTab').forEach(t=>t.classList.add('hidden'));
+      document.getElementById(btn.getAttribute('data-tab')).classList.remove('hidden');
+    });
+  });
+
+  // --------------------
+  // You can now reuse your previous full functions for:
+  // renderPosts(), addPost(), likePost(), addComment(), renderComments()
+  // renderPendingPosts(), approvePost(), deletePost()
+  // updateMessageRecipients(), renderInbox(), openMessageTo()
+  // renderPhotos(), uploadPhotoBtn onclick
+  // renderInsights()
+  // Admin promote
+  // The only changes are to add profile pictures to posts and member list
+  // --------------------
+
+  // Video tab functions
+  document.getElementById('uploadVideoBtn').onclick = ()=>{
+    const file = document.getElementById('videoFile').files[0];
+    const caption = document.getElementById('videoCaption').value.trim();
+    if(!file) return alert("Select a video");
+    const reader = new FileReader();
+    reader.onload = e => {
+      videos.push({id:Date.now(), user:currentUser.username, videoData:e.target.result, caption, date: new Date()});
+      saveVideos(); renderVideos();
+      document.getElementById('videoFile').value='';
+      document.getElementById('videoCaption').value='';
+    }
+    reader.readAsDataURL(file);
+  }
+
+  function renderVideos(){
+    const div = document.getElementById('videoGallery');
+    div.innerHTML = '';
+    videos.slice().reverse().forEach(v=>{
+      const vd = document.createElement('div'); vd.className='videoItem';
+      vd.innerHTML = `
+        <video controls style="width:100%;border-radius:5px;">
+          <source src="${v.videoData}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <p>${v.caption}</p>
+        <small>Uploaded by: ${v.user}</small>`;
+      div.appendChild(vd);
+    });
+  }
+
+});
+</script>
+</body>
+</html>
+
+
+
+
