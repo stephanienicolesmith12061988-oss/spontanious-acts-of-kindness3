@@ -3,356 +3,301 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spontaneous Acts of Kindness</title>
-<link href="https://fonts.googleapis.com/css2?family=Nosifer&display=swap" rel="stylesheet">
+<title>Interactive Social Page</title>
 <style>
-body { font-family: Arial, sans-serif; margin:0; padding:0; background:linear-gradient(120deg,#8e44ad,#3498db,#ff6b81); color:#fff;}
-header { text-align:center; padding:15px; font-size:2em; font-weight:bold; font-style:italic; text-decoration:underline; color:#4b0082; font-family:'Nosifer', cursive; text-shadow:2px 2px 5px rgba(0,0,0,0.5);}
-.container{ max-width:900px; margin:auto; padding:20px;}
-input, textarea, select, button{ padding:8px; margin:5px 0; border-radius:5px; border:none; width:100%;}
-button{ background:#ff6b81; color:#fff; cursor:pointer; font-weight:bold;}
-button:hover{ opacity:0.85;}
-.hidden{ display:none;}
-.post, .message, .photoItem, .videoItem{ background:rgba(255,255,255,0.1); padding:10px; margin:10px 0; border-radius:8px;}
-#tabMenu button{ margin-right:10px;}
-#photoGallery,#videoGallery{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-top:10px;}
-img.profile{ width:50px; height:50px; border-radius:50%; vertical-align:middle; margin-right:10px;}
-#kindnessCover { display:flex; align-items:center; justify-content:center; background: linear-gradient(90deg, #8e44ad, #ff6b81); padding:10px; border-radius:8px; margin-bottom:10px;}
-.kindness-text { font-family:'Nosifer',cursive; font-size:2em; text-shadow:2px 2px 5px rgba(0,0,0,0.5); color:#fff; margin-left:10px;}
-#shareSection { margin-top:20px;}
-#shareBtn{ background:#fff;color:#8e44ad;padding:8px 12px;border:none;border-radius:4px;font-weight:bold;cursor:pointer;}
-#fbShareLink{ margin-left:10px; background:#4267B2;color:#fff;padding:8px 12px;text-decoration:none;border-radius:4px;font-weight:bold;}
-#fbShareLink:hover{ opacity:0.9;}
-#profileSection img{ margin-bottom:10px;}
+  /* --- COLORS --- */
+  :root {
+    --dark-blue: #0b1e3f;
+    --gold: #ffd700;
+    --light-bg: #f4f4f4;
+  }
+
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--light-bg);
+  }
+
+  header {
+    background-color: var(--dark-blue);
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  header h1 {
+    margin: 0;
+    font-size: 1.8em;
+    color: var(--gold);
+  }
+
+  nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: bold;
+  }
+
+  nav a:hover {
+    color: var(--gold);
+  }
+
+  main {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  /* --- SIDEBAR --- */
+  .sidebar {
+    width: 200px;
+    background-color: var(--dark-blue);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    height: fit-content;
+  }
+
+  .sidebar h2 {
+    color: var(--gold);
+  }
+
+  .members-list li {
+    margin-bottom: 8px;
+  }
+
+  /* --- FEED --- */
+  .feed {
+    flex: 1;
+  }
+
+  .post-form {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  }
+
+  .post-form input, .post-form textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  .post-form button {
+    background-color: var(--gold);
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+
+  .post-form button:hover {
+    background-color: #e6c200;
+  }
+
+  .post {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  }
+
+  .post img {
+    max-width: 100%;
+    margin-top: 10px;
+    border-radius: 8px;
+  }
+
+  .post-author {
+    font-weight: bold;
+    color: var(--dark-blue);
+  }
+
+  .comment-section {
+    margin-top: 10px;
+    font-size: 0.9em;
+  }
+
+  .comment-section input {
+    width: calc(100% - 70px);
+    padding: 5px;
+  }
+
+  .comment-section button {
+    padding: 5px 10px;
+    background-color: var(--dark-blue);
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+
+  .comment-section button:hover {
+    background-color: var(--gold);
+    color: black;
+  }
+
+  /* --- PROFILE PAGE --- */
+  .profile {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .profile img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+  }
+
+  .cover-photo {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+  }
+
+  /* --- FOOTER --- */
+  footer {
+    text-align: center;
+    padding: 10px;
+    background-color: var(--dark-blue);
+    color: white;
+  }
+
 </style>
 </head>
 <body>
-<header>Spontaneous Acts of Kindness</header>
-<div class="container">
 
-<!-- Login/Register Page -->
-<div id="loginPage">
-  <h2>Login / Register</h2>
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
-  <button id="loginBtn">Login</button>
-  <button id="registerBtn">Register</button>
-  <p id="authMsg"></p>
-</div>
+<header>
+  <h1>Grand Social</h1>
+  <nav>
+    <a href="#" onclick="showTab('feed')">Feed</a>
+    <a href="#" onclick="showTab('members')">Members</a>
+    <a href="#" onclick="showTab('profile')">Profile</a>
+  </nav>
+</header>
 
-<!-- Main Page -->
-<div id="mainPage" class="hidden">
-  <div id="kindnessCover">
-    <span class="kindness-text">Kindness Matters</span>
+<main>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Members</h2>
+    <ul class="members-list" id="membersList">
+      <!-- Members dynamically added -->
+    </ul>
   </div>
-  <h2>Welcome, <span id="userWelcome"></span>!</h2>
 
-  <!-- Profile Picture & Cover Photo -->
-  <div id="profileSection">
-    <h3>Your Profile</h3>
-    <label>Upload Profile Picture:</label>
-    <input type="file" id="profilePicFile" accept="image/*">
-    <button id="uploadProfilePicBtn">Upload Profile Picture</button>
-
-    <label>Upload Cover Photo:</label>
-    <input type="file" id="coverPhotoFile" accept="image/*">
-    <button id="uploadCoverPhotoBtn">Upload Cover Photo</button>
-
-    <div id="userProfilePreview">
-      <h4>Preview:</h4>
-      <img id="profilePreview" src="" alt="Profile Pic" style="width:100px;height:100px;border-radius:50%;">
-      <img id="coverPreview" src="" alt="Cover Photo" style="width:100%;height:150px;border-radius:8px;margin-top:5px;">
+  <!-- Feed / Profile -->
+  <div class="feed" id="feedTab">
+    <div class="post-form">
+      <input type="text" id="postAuthor" placeholder="Your name">
+      <textarea id="postContent" rows="3" placeholder="What's on your mind?"></textarea>
+      <input type="text" id="postImage" placeholder="Image URL (optional)">
+      <button onclick="createPost()">Post</button>
+    </div>
+    <div id="postsContainer">
+      <!-- Posts will appear here -->
     </div>
   </div>
 
-  <div id="shareSection">
-    <button id="shareBtn">Copy Link</button>
-    <a id="fbShareLink" href="#" target="_blank">Share on Facebook</a>
+  <div class="profile" id="profileTab" style="display:none;">
+    <img src="https://via.placeholder.com/600x150" class="cover-photo">
+    <img src="https://via.placeholder.com/100" alt="Profile Picture">
+    <h2 id="profileName">Your Name</h2>
+    <p>Member since: 2025</p>
   </div>
+</main>
 
-  <h3>Platform Rules:</h3>
-  <ul>
-    <li>No bullying or harassment</li>
-    <li>No spam, scams, or fraudulent links</li>
-    <li>No self-promotion or advertising</li>
-    <li>No offensive language or content</li>
-    <li>Respect others’ privacy</li>
-    <li>All posts must follow kindness guidelines</li>
-  </ul>
-  <hr>
-
-  <!-- Tabs -->
-  <div id="tabMenu">
-    <button data-tab="feedTab">Feed</button>
-    <button data-tab="messagesTab">Messages</button>
-    <button data-tab="membersTab">Members</button>
-    <button data-tab="photosTab">Photos</button>
-    <button data-tab="videosTab">Videos</button>
-    <button data-tab="insightsTab" class="hidden" id="insightsTabBtn">Insights</button>
-    <button id="logoutBtn">Logout</button>
-  </div>
-
-  <!-- Tabs Content -->
-  <div id="feedTab">
-    <h3>Create a Post</h3>
-    <textarea id="postContent" placeholder="What's on your mind?"></textarea>
-    <button id="submitPost">Submit Post</button>
-    <div id="posts"></div>
-  </div>
-
-  <div id="messagesTab" class="hidden">
-    <h3>Private Messaging</h3>
-    <select id="messageRecipient"></select>
-    <textarea id="messageContent" placeholder="Write your message..."></textarea>
-    <button id="sendMessageBtn">Send Message</button>
-    <div id="messageInbox"></div>
-  </div>
-
-  <div id="membersTab" class="hidden">
-    <h3>Members</h3>
-    <div id="memberList"></div>
-  </div>
-
-  <div id="photosTab" class="hidden">
-    <h3>Photo Collections</h3>
-    <input type="file" id="photoFile" accept="image/*">
-    <input type="text" id="photoCaption" placeholder="Caption (optional)">
-    <button id="uploadPhotoBtn">Upload Photo</button>
-    <div id="photoGallery"></div>
-  </div>
-
-  <div id="videosTab" class="hidden">
-    <h3>Video Gallery</h3>
-    <input type="file" id="videoFile" accept="video/*">
-    <input type="text" id="videoCaption" placeholder="Caption (optional)">
-    <button id="uploadVideoBtn">Upload Video</button>
-    <div id="videoGallery"></div>
-  </div>
-
-  <div id="insightsTab" class="hidden">
-    <h3>Insights</h3>
-    <canvas id="insightsChart" width="400" height="200"></canvas>
-  </div>
-
-</div>
-</div>
-
-<!-- Chart.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<footer>
+  &copy; 2025 Grand Social
+</footer>
 
 <script>
-document.addEventListener('DOMContentLoaded', ()=>{
-  let users = JSON.parse(localStorage.getItem('users')) || [];
-  let posts = JSON.parse(localStorage.getItem('posts')) || [];
-  let photos = JSON.parse(localStorage.getItem('photos')) || [];
-  let videos = JSON.parse(localStorage.getItem('videos')) || [];
-  let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+  // --- DATA ---
+  let posts = [];
+  let members = ["Admin", "Alice", "Bob", "Charlie"];
 
-  const loginPage = document.getElementById('loginPage');
-  const mainPage = document.getElementById('mainPage');
-  const authMsg = document.getElementById('authMsg');
-  const userWelcome = document.getElementById('userWelcome');
-
-  function saveAll(){ 
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('posts', JSON.stringify(posts));
-    localStorage.setItem('photos', JSON.stringify(photos));
-    localStorage.setItem('videos', JSON.stringify(videos));
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-  }
-
-  // Default admin
-  if(!users.find(u=>u.username==='stephaniensmith12688')){
-    users.push({username:'stephaniensmith12688',password:'NinjaGirl555:)',isAdmin:true,approved:true,messages:[],profilePic:'',coverPhoto:''});
-    saveAll();
-  }
-
-  // Auto-login admin on this computer
-  const localAdmin = users.find(u => u.username==='stephaniensmith12688');
-  if(localAdmin){
-      currentUser = localAdmin;
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
-  }
-
-  // Tab switching
-  document.querySelectorAll('#tabMenu button[data-tab]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('#feedTab,#messagesTab,#membersTab,#photosTab,#videosTab,#insightsTab').forEach(tab=>tab.classList.add('hidden'));
-      document.getElementById(btn.getAttribute('data-tab')).classList.remove('hidden');
+  // Add members to sidebar
+  const membersList = document.getElementById("membersList");
+  function renderMembers() {
+    membersList.innerHTML = "";
+    members.forEach(member => {
+      let li = document.createElement("li");
+      li.textContent = member;
+      membersList.appendChild(li);
     });
-  });
+  }
+  renderMembers();
 
-  function showMainPage(user){
-    currentUser=user;
-    saveAll();
-    loginPage.classList.add('hidden'); mainPage.classList.remove('hidden');
-    userWelcome.textContent = user.username;
+  // Show tab function
+  function showTab(tab) {
+    document.getElementById("feedTab").style.display = "none";
+    document.getElementById("profileTab").style.display = "none";
+    if(tab === "feed") document.getElementById("feedTab").style.display = "block";
+    if(tab === "profile") document.getElementById("profileTab").style.display = "block";
+  }
+
+  // Create a post
+  function createPost() {
+    const author = document.getElementById("postAuthor").value || "Anonymous";
+    const content = document.getElementById("postContent").value;
+    const image = document.getElementById("postImage").value;
+
+    if(!content) { alert("Post content cannot be empty."); return; }
+
+    const post = { author, content, image, comments: [] };
+    posts.unshift(post);
     renderPosts();
-    renderMembers();
-    renderMessages();
-    renderPhotos();
-    renderVideos();
-    renderInsights();
+
+    // Clear form
+    document.getElementById("postAuthor").value = "";
+    document.getElementById("postContent").value = "";
+    document.getElementById("postImage").value = "";
   }
 
-  // Register (auto-approve)
-  document.getElementById('registerBtn').onclick = ()=>{
-    const uname = document.getElementById('username').value.trim();
-    const pwd = document.getElementById('password').value.trim();
-    if(!uname || !pwd){ authMsg.textContent="Enter username & password"; return; }
-    if(users.find(u=>u.username===uname)){ authMsg.textContent="Username taken"; return; }
-    const newUser={username:uname,password:pwd,isAdmin:false,approved:true,messages:[],profilePic:'',coverPhoto:''};
-    users.push(newUser); saveAll(); authMsg.textContent="Registered! You can now log in.";
-    document.getElementById('username').value=''; document.getElementById('password').value='';
-  }
+  // Render posts
+  const postsContainer = document.getElementById("postsContainer");
+  function renderPosts() {
+    postsContainer.innerHTML = "";
+    posts.forEach((post, index) => {
+      const postDiv = document.createElement("div");
+      postDiv.className = "post";
 
-  // Login
-  document.getElementById('loginBtn').onclick = ()=>{
-    const uname = document.getElementById('username').value.trim();
-    const pwd = document.getElementById('password').value.trim();
-    const user = users.find(u=>u.username===uname && u.password===pwd);
-    if(!user){ authMsg.textContent="Invalid login"; return; }
-    showMainPage(user);
-  }
+      postDiv.innerHTML = `
+        <div class="post-author">${post.author}</div>
+        <div class="post-content">${post.content}</div>
+        ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
+        <div class="comment-section">
+          <input type="text" placeholder="Add a comment..." id="commentInput${index}">
+          <button onclick="addComment(${index})">Comment</button>
+          <div id="comments${index}"></div>
+        </div>
+      `;
+      postsContainer.appendChild(postDiv);
 
-  // Logout
-  document.getElementById('logoutBtn').onclick = ()=>{
-    currentUser=null; localStorage.removeItem('currentUser');
-    loginPage.classList.remove('hidden'); mainPage.classList.add('hidden');
-  }
-
-  // --- Posts ---
-  document.getElementById('submitPost').onclick = ()=>{
-    const content = document.getElementById('postContent').value.trim();
-    if(!content) return;
-    posts.push({author:currentUser.username,content,datetime:new Date().toLocaleString()});
-    saveAll();
-    document.getElementById('postContent').value='';
-    renderPosts();
-  }
-
-  function renderPosts(){
-    const container = document.getElementById('posts');
-    container.innerHTML='';
-    posts.slice().reverse().forEach(p=>{
-      const div=document.createElement('div');
-      div.className='post';
-      div.innerHTML=`<strong>${p.author}</strong> <em>${p.datetime}</em><p>${p.content}</p>`;
-      container.appendChild(div);
+      // Render comments
+      const commentsDiv = document.getElementById(`comments${index}`);
+      commentsDiv.innerHTML = post.comments.map(c => `<p><strong>${c.author}:</strong> ${c.text}</p>`).join("");
     });
   }
 
-  // --- Members ---
-  function renderMembers(){
-    const container=document.getElementById('memberList');
-    container.innerHTML='';
-    users.forEach(u=>{
-      const div=document.createElement('div');
-      div.className='post';
-      div.innerHTML=`<strong>${u.username}</strong>`;
-      container.appendChild(div);
-    });
-  }
-
-  // --- Messages ---
-  function renderMessages(){
-    const recipientSelect=document.getElementById('messageRecipient');
-    recipientSelect.innerHTML='';
-    users.filter(u=>u.username!==currentUser.username).forEach(u=>{
-      const opt=document.createElement('option'); opt.value=u.username; opt.textContent=u.username;
-      recipientSelect.appendChild(opt);
-    });
-    updateInbox();
-  }
-
-  document.getElementById('sendMessageBtn').onclick = ()=>{
-    const to = document.getElementById('messageRecipient').value;
-    const text = document.getElementById('messageContent').value.trim();
+  // Add comment
+  function addComment(index) {
+    const input = document.getElementById(`commentInput${index}`);
+    const text = input.value;
     if(!text) return;
-    const recipient=users.find(u=>u.username===to);
-    recipient.messages.push({from:currentUser.username,text,date:new Date().toLocaleString()});
-    saveAll();
-    document.getElementById('messageContent').value='';
-    updateInbox();
+    posts[index].comments.push({author: "Member", text});
+    renderPosts();
   }
-
-  function updateInbox(){
-    const inbox=document.getElementById('messageInbox');
-    inbox.innerHTML='';
-    currentUser.messages.slice().reverse().forEach(m=>{
-      const div=document.createElement('div');
-      div.className='message';
-      div.innerHTML=`<strong>${m.from}</strong> <em>${m.date}</em><p>${m.text}</p>`;
-      inbox.appendChild(div);
-    });
-  }
-
-  // --- Photos ---
-  document.getElementById('uploadPhotoBtn').onclick=()=>{
-    const file=document.getElementById('photoFile').files[0];
-    if(!file) return;
-    const reader=new FileReader();
-    reader.onload=()=>{ photos.push({author:currentUser.username,data:reader.result,caption:document.getElementById('photoCaption').value}); saveAll(); renderPhotos(); }
-    reader.readAsDataURL(file);
-  }
-
-  function renderPhotos(){
-    const container=document.getElementById('photoGallery');
-    container.innerHTML='';
-    photos.slice().reverse().forEach(p=>{
-      const div=document.createElement('div'); div.className='photoItem';
-      div.innerHTML=`<strong>${p.author}</strong><p>${p.caption}</p><img src="${p.data}" style="width:100%;">`;
-      container.appendChild(div);
-    });
-  }
-
-  // --- Videos ---
-  document.getElementById('uploadVideoBtn').onclick=()=>{
-    const file=document.getElementById('videoFile').files[0];
-    if(!file) return;
-    const reader=new FileReader();
-    reader.onload=()=>{ videos.push({author:currentUser.username,data:reader.result,caption:document.getElementById('videoCaption').value}); saveAll(); renderVideos(); }
-    reader.readAsDataURL(file);
-  }
-
-  function renderVideos(){
-    const container=document.getElementById('videoGallery');
-    container.innerHTML='';
-    videos.slice().reverse().forEach(v=>{
-      const div=document.createElement('div'); div.className='videoItem';
-      div.innerHTML=`<strong>${v.author}</strong><p>${v.caption}</p><video src="${v.data}" controls style="width:100%;"></video>`;
-      container.appendChild(div);
-    });
-  }
-
-  // --- Insights ---
-  function renderInsights(){
-    document.getElementById('insightsTabBtn').classList.remove('hidden');
-    const ctx=document.getElementById('insightsChart').getContext('2d');
-    new Chart(ctx,{
-      type:'bar',
-      data:{
-        labels:users.map(u=>u.username),
-        datasets:[{
-          label:'Posts Count',
-          data:users.map(u=>posts.filter(p=>p.author===u.username).length),
-          backgroundColor:'rgba(255,99,132,0.5)'
-        }]
-      },
-      options:{ responsive:true, scales:{y:{beginAtZero:true}} }
-    });
-  }
-
-  // --- Share link ---
-  document.getElementById('shareBtn').onclick=()=>{
-    navigator.clipboard.writeText(window.location.href);
-    alert('Page link copied!');
-  }
-  document.getElementById('fbShareLink').onclick=()=>{
-    const fbLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
-    window.open(fbLink,'_blank');
-  }
-});
 </script>
+
 </body>
 </html>
