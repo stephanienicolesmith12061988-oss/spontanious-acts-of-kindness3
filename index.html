@@ -15,7 +15,6 @@
       margin: 0;
       padding: 0;
     }
-
     header {
       background: linear-gradient(90deg, #9b59b6, #2980b9, #ff6b81);
       padding: 15px;
@@ -28,65 +27,47 @@
       font-family: 'Nosifer', cursive;
       text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
-
     .container {
       padding: 20px;
       max-width: 900px;
       margin: auto;
     }
-
     input, textarea, button, select {
       padding: 8px;
       margin: 5px 0;
       border-radius: 5px;
       border: none;
     }
-
-    input, textarea, select {
-      width: 100%;
-    }
-
+    input, textarea, select { width: 100%; }
     button {
       background: #ff6b81;
       color: #ffffff;
       cursor: pointer;
       font-weight: bold;
     }
-
-    button:hover {
-      opacity: 0.85;
-    }
-
+    button:hover { opacity: 0.85; }
     .hidden { display: none; }
-
     .post, .photoItem, .videoItem {
       background: rgba(255, 255, 255, 0.1);
       padding: 10px;
       margin: 10px 0;
       border-radius: 8px;
     }
-
     .message {
       background: rgba(255, 255, 255, 0.05);
       padding: 5px;
       margin: 5px 0;
       border-radius: 5px;
     }
-
-    #tabMenu button {
-      margin-right: 10px;
-    }
-
+    #tabMenu button { margin-right: 10px; }
     h2, h3 { color: #ffffff; }
     hr { border: 1px solid rgba(255, 255, 255, 0.3); }
-
     #photoGallery, #videoGallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 10px;
       margin-top: 10px;
     }
-
     img.profile {
       width: 50px;
       height: 50px;
@@ -94,7 +75,6 @@
       vertical-align: middle;
       margin-right: 10px;
     }
-
     #kindnessCover {
       display: flex;
       align-items: center;
@@ -104,18 +84,42 @@
       border-radius: 8px;
       margin-bottom: 10px;
     }
-
     .kindness-icon {
       width: 60px;
       height: 60px;
       margin-right: 15px;
     }
-
     .kindness-text {
       color: #ffffff;
       font-size: 2em;
       font-family: 'Nosifer', cursive;
       text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Share section styling */
+    #shareSection {
+      margin-top: 20px;
+    }
+    #shareBtn {
+      background: #ffffff;
+      color: #8e44ad;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #fbShareLink {
+      margin-left: 10px;
+      background: #4267B2;
+      color: white;
+      padding: 8px 12px;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    #fbShareLink:hover {
+      opacity: 0.9;
     }
   </style>
 </head>
@@ -123,7 +127,7 @@
   <header>Spontaneous Acts of Kindness</header>
 
   <div class="container">
-    <!-- Login / Register -->
+    <!-- Login / Register Page -->
     <div id="loginPage">
       <h2>Login / Register</h2>
       <input type="text" id="username" placeholder="Username">
@@ -159,6 +163,7 @@
       </ul>
       <hr>
 
+      <!-- Tabs -->
       <div id="tabMenu">
         <button data-tab="feedTab">Feed</button>
         <button data-tab="messagesTab">Messages</button>
@@ -168,6 +173,7 @@
         <button data-tab="insightsTab" id="insightsTabBtn" class="hidden">Insights</button>
       </div>
 
+      <!-- Content Tabs -->
       <div id="feedTab">
         <h3>Create a Post</h3>
         <textarea id="postContent" placeholder="What's on your mind?"></textarea>
@@ -210,6 +216,13 @@
         <div id="insights"></div>
       </div>
 
+      <!-- Share Section -->
+      <div id="shareSection">
+        <button id="shareBtn">Share this page</button>
+        <a id="fbShareLink" href="#" target="_blank">Share on Facebook</a>
+      </div>
+
+      <!-- Admin Panel -->
       <div id="adminPanel" class="hidden">
         <h3>Admin Panel</h3>
         <h4>Pending Posts</h4>
@@ -236,14 +249,21 @@
     const profilePicInput = document.getElementById('profilePicInput');
     const coverPhotoInput = document.getElementById('coverPhotoInput');
 
-    function saveUsers() { localStorage.setItem('users', JSON.stringify(users)); }
-    function savePosts() { localStorage.setItem('posts', JSON.stringify(posts)); }
-    function savePhotos() { localStorage.setItem('photos', JSON.stringify(photos)); }
-    function saveVideos() { localStorage.setItem('videos', JSON.stringify(videos)); }
+    const saveUsers = () => localStorage.setItem('users', JSON.stringify(users));
+    const savePosts = () => localStorage.setItem('posts', JSON.stringify(posts));
+    const savePhotos = () => localStorage.setItem('photos', JSON.stringify(photos));
+    const saveVideos = () => localStorage.setItem('videos', JSON.stringify(videos));
 
     // Default admin
     if (!users.find(u => u.username === 'stephaniensmith12688')) {
-      users.push({ username: 'stephaniensmith12688', password: 'NinjaGirl555:)', isAdmin: true, messages: [], profilePic: '', coverPhoto: '' });
+      users.push({
+        username: 'stephaniensmith12688',
+        password: 'NinjaGirl555:)',
+        isAdmin: true,
+        messages: [],
+        profilePic: '',
+        coverPhoto: ''
+      });
       saveUsers();
     }
 
@@ -268,6 +288,31 @@
     const adminUser = users.find(u => u.username === 'stephaniensmith12688');
     if (adminUser) showMainPage(adminUser);
 
+    // Profile pic upload
+    profilePicInput.addEventListener('change', e => {
+      const f = e.target.files[0];
+      if (!f || !currentUser) return;
+      const r = new FileReader();
+      r.onload = ev => {
+        currentUser.profilePic = ev.target.result;
+        saveUsers();
+      };
+      r.readAsDataURL(f);
+    });
+
+    // Cover photo upload (optional override)
+    coverPhotoInput.addEventListener('change', e => {
+      const f = e.target.files[0];
+      if (!f || !currentUser) return;
+      const r = new FileReader();
+      r.onload = ev => {
+        // (not used in the banner here, but saved for user data)
+        currentUser.coverPhoto = ev.target.result;
+        saveUsers();
+      };
+      r.readAsDataURL(f);
+    });
+
     // Login
     document.getElementById('loginBtn').onclick = () => {
       const uname = document.getElementById('username').value.trim();
@@ -283,60 +328,58 @@
       const pwd = document.getElementById('password').value.trim();
       if (!uname || !pwd) { authMsg.textContent = "Enter username & password"; return; }
       if (users.find(u => u.username === uname)) { authMsg.textContent = "Username taken"; return; }
-      const newUser = { username: uname, password: pwd, isAdmin: false, messages: [], profilePic: '', coverPhoto: '' };
+      const newUser = {
+        username: uname,
+        password: pwd,
+        isAdmin: false,
+        messages: [],
+        profilePic: '',
+        coverPhoto: ''
+      };
       users.push(newUser);
       saveUsers();
       showMainPage(newUser);
     };
 
-    // Upload profile pic
-    profilePicInput.addEventListener('change', e => {
-      const f = e.target.files[0];
-      if (!f || !currentUser) return;
-      const r = new FileReader();
-      r.onload = ev => {
-        currentUser.profilePic = ev.target.result;
-        saveUsers();
-      };
-      r.readAsDataURL(f);
-    });
-
-    // Upload cover photo (optional override)
-    coverPhotoInput.addEventListener('change', e => {
-      const f = e.target.files[0];
-      if (!f || !currentUser) return;
-      const r = new FileReader();
-      r.onload = ev => {
-        currentUser.coverPhoto = ev.target.result;
-        saveUsers();
-        // You could also swap out the kindness banner if you want
-      };
-      r.readAsDataURL(f);
-    });
-
     // Tabs
     document.querySelectorAll('#tabMenu button').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('#feedTab, #messagesTab, #membersTab, #photosTab, #videosTab, #insightsTab').forEach(t => t.classList.add('hidden'));
+        document.querySelectorAll('#feedTab, #messagesTab, #membersTab, #photosTab, #videosTab, #insightsTab')
+          .forEach(t => t.classList.add('hidden'));
         document.getElementById(btn.getAttribute('data-tab')).classList.remove('hidden');
       });
     });
 
-    // --- Post / Like / Comment logic (reuse from your older code) ---
+    // Sharing functionality
+    document.getElementById('shareBtn').onclick = () => {
+      const url = window.location.href;
+      navigator.clipboard.writeText(url).then(() => {
+        alert("Link copied to clipboard!");
+      }).catch(() => {
+        alert("Could not copy link. Here's the URL: " + url);
+      });
+    };
+
+    document.getElementById('fbShareLink').onclick = () => {
+      const url = encodeURIComponent(window.location.href);
+      const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      window.open(fbUrl, 'facebook-share-dialog', 'width=600,height=400');
+      return false;
+    };
+
+    // Posts
     document.getElementById('submitPost').onclick = () => {
       const content = document.getElementById('postContent').value.trim();
       const imgFile = document.getElementById('postImage').files[0];
       if (!content && !imgFile) return alert("Enter text or select image");
       if (imgFile) {
         const r = new FileReader();
-        r.onload = e => {
-          addPost(content, e.target.result);
-        };
+        r.onload = e => { addPost(content, e.target.result); };
         r.readAsDataURL(imgFile);
       } else {
         addPost(content, null);
       }
-    }
+    };
 
     function addPost(content, image) {
       const post = { id: Date.now(), user: currentUser.username, content, image, likes: 0, comments: [], approved: currentUser.isAdmin };
@@ -354,8 +397,7 @@
       posts.filter(p => p.approved).reverse().forEach(p => {
         const pd = document.createElement('div');
         pd.className = 'post';
-        pd.innerHTML = `<strong>${p.user}</strong>
-          <p>${p.content}</p>` +
+        pd.innerHTML = `<strong>${p.user}</strong><p>${p.content}</p>` +
           (p.image ? `<img src="${p.image}" style="max-width:100%;">` : '') +
           `<p>Likes: ${p.likes} <button onclick="likePost(${p.id})">Like</button></p>` +
           `<div id="comments-${p.id}"></div>` +
@@ -372,7 +414,7 @@
       savePosts();
       renderPosts();
       renderInsights();
-    }
+    };
 
     window.addComment = id => {
       const input = document.getElementById(`commentInput-${id}`);
@@ -384,7 +426,7 @@
       savePosts();
       renderComments(id);
       renderInsights();
-    }
+    };
 
     function renderComments(id) {
       const div = document.getElementById(`comments-${id}`);
@@ -399,7 +441,7 @@
       });
     }
 
-    // --- Admin Panel / Pending Posts ---
+    // Admin: pending posts
     function renderPendingPosts() {
       if (!currentUser.isAdmin) return;
       const div = document.getElementById('pendingPosts');
@@ -407,8 +449,7 @@
       posts.filter(p => !p.approved).forEach(p => {
         const pd = document.createElement('div');
         pd.className = 'post';
-        pd.innerHTML = `<strong>${p.user}</strong>
-          <p>${p.content}</p>` +
+        pd.innerHTML = `<strong>${p.user}</strong><p>${p.content}</p>` +
           (p.image ? `<img src="${p.image}" style="max-width:100%;">` : '') +
           `<button onclick="approvePost(${p.id})">Approve</button>` +
           `<button onclick="deletePost(${p.id})">Delete</button>`;
@@ -424,7 +465,7 @@
       renderPosts();
       renderPendingPosts();
       renderInsights();
-    }
+    };
 
     window.deletePost = id => {
       posts = posts.filter(x => x.id !== id);
@@ -432,9 +473,9 @@
       renderPosts();
       renderPendingPosts();
       renderInsights();
-    }
+    };
 
-    // --- Messaging ---
+    // Messaging
     function updateMessageRecipients() {
       const sel = document.getElementById('messageRecipient');
       sel.innerHTML = '';
@@ -451,19 +492,18 @@
       const text = document.getElementById('messageContent').value.trim();
       if (!text) return;
       const recipient = users.find(u => u.username === to);
-      if (!recipient) return;
       recipient.messages = recipient.messages || [];
       recipient.messages.push({ from: currentUser.username, text });
       saveUsers();
       document.getElementById('messageContent').value = '';
       renderInbox();
-    }
+    };
 
     function renderInbox() {
       const div = document.getElementById('messageInbox');
       div.innerHTML = '<h4>Inbox:</h4>';
       users.forEach(u => {
-        (u.messages || []).filter(m => m.to === currentUser.username || (m.to === undefined && u.username === currentUser.username)).forEach(m => {
+        (u.messages || []).forEach(m => {
           const md = document.createElement('div');
           md.className = 'message';
           md.textContent = `${m.from}: ${m.text}`;
@@ -472,7 +512,7 @@
       });
     }
 
-    // --- Members ---
+    // Members
     function renderMembers() {
       const div = document.getElementById('memberList');
       div.innerHTML = '';
@@ -488,9 +528,9 @@
       document.querySelector('[data-tab="messagesTab"]').click();
       document.getElementById('messageRecipient').value = uname;
       document.getElementById('messageContent').focus();
-    }
+    };
 
-    // --- Photos ---
+    // Photos
     document.getElementById('uploadPhotoBtn').onclick = () => {
       const file = document.getElementById('photoFile').files[0];
       const caption = document.getElementById('photoCaption').value.trim();
@@ -511,12 +551,12 @@
       photos.slice().reverse().forEach(p => {
         const d = document.createElement('div');
         d.className = 'photoItem';
-        d.innerHTML = `<img src="${p.data}" style="width:100%;border-radius:5px;"><p>${p.caption}</p><small>By: ${p.user}</small>`;
+        d.innerHTML = `<img src="${p.data}" style="width:100%; border-radius:5px;"><p>${p.caption}</p><small>By: ${p.user}</small>`;
         div.appendChild(d);
       });
     }
 
-    // --- Videos ---
+    // Videos
     document.getElementById('uploadVideoBtn').onclick = () => {
       const file = document.getElementById('videoFile').files[0];
       const caption = document.getElementById('videoCaption').value.trim();
@@ -537,12 +577,12 @@
       videos.slice().reverse().forEach(v => {
         const d = document.createElement('div');
         d.className = 'videoItem';
-        d.innerHTML = `<video controls style="width:100%;border-radius:5px;"><source src="${v.data}"></video><p>${v.caption}</p><small>By: ${v.user}</small>`;
+        d.innerHTML = `<video controls style="width:100%; border-radius:5px;"><source src="${v.data}"></video><p>${v.caption}</p><small>By: ${v.user}</small>`;
         div.appendChild(d);
       });
     }
 
-    // --- Insights ---
+    // Insights
     function renderInsights() {
       if (!currentUser.isAdmin) return;
       const div = document.getElementById('insights');
@@ -554,8 +594,10 @@
         <p>Total Videos: ${videos.length}</p>`;
     }
 
-    // Initially render members
+    // Initialize some pieces
     renderMembers();
+    renderPhotos();
+    renderVideos();
   });
   </script>
 </body>
