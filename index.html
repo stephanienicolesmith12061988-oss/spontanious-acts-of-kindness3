@@ -78,7 +78,6 @@ img.profile{ width:50px; height:50px; border-radius:50%; vertical-align:middle; 
     <li>No offensive language or content</li>
     <li>Respect others’ privacy</li>
     <li>All posts must follow kindness guidelines</li>
-    <li>Admins approve all posts and users</li>
   </ul>
   <hr>
 
@@ -93,6 +92,7 @@ img.profile{ width:50px; height:50px; border-radius:50%; vertical-align:middle; 
     <button id="logoutBtn">Logout</button>
   </div>
 
+  <!-- Tabs Content -->
   <div id="feedTab">
     <h3>Create a Post</h3>
     <textarea id="postContent" placeholder="What's on your mind?"></textarea>
@@ -131,17 +131,14 @@ img.profile{ width:50px; height:50px; border-radius:50%; vertical-align:middle; 
 
   <div id="insightsTab" class="hidden">
     <h3>Insights</h3>
-    <div id="insights"></div>
-  </div>
-
-  <!-- Admin Panel -->
-  <div id="adminPanel" class="hidden">
-    <h3>Pending Users</h3>
-    <div id="pendingUsers"></div>
+    <canvas id="insightsChart" width="400" height="200"></canvas>
   </div>
 
 </div>
 </div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -170,7 +167,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     saveAll();
   }
 
-  // --- AUTO LOGIN FOR THIS COMPUTER ---
+  // Auto-login admin on this computer
   const localAdmin = users.find(u => u.username==='stephaniensmith12688');
   if(localAdmin){
       currentUser = localAdmin;
@@ -185,22 +182,27 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
   });
 
-  // Show main page
-  if(currentUser){ 
-    showMainPage(currentUser); 
-  } else { 
-    loginPage.classList.remove('hidden'); 
-    mainPage.classList.add('hidden'); 
+  function showMainPage(user){
+    currentUser=user;
+    saveAll();
+    loginPage.classList.add('hidden'); mainPage.classList.remove('hidden');
+    userWelcome.textContent = user.username;
+    renderPosts();
+    renderMembers();
+    renderMessages();
+    renderPhotos();
+    renderVideos();
+    renderInsights();
   }
 
-  // Register
+  // Register (auto-approve)
   document.getElementById('registerBtn').onclick = ()=>{
     const uname = document.getElementById('username').value.trim();
     const pwd = document.getElementById('password').value.trim();
     if(!uname || !pwd){ authMsg.textContent="Enter username & password"; return; }
     if(users.find(u=>u.username===uname)){ authMsg.textContent="Username taken"; return; }
-    const newUser={username:uname,password:pwd,isAdmin:false,approved:false,messages:[],profilePic:'',coverPhoto:''};
-    users.push(newUser); saveAll(); authMsg.textContent="Registered! Waiting admin approval.";
+    const newUser={username:uname,password:pwd,isAdmin:false,approved:true,messages:[],profilePic:'',coverPhoto:''};
+    users.push(newUser); saveAll(); authMsg.textContent="Registered! You can now log in.";
     document.getElementById('username').value=''; document.getElementById('password').value='';
   }
 
@@ -210,7 +212,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const pwd = document.getElementById('password').value.trim();
     const user = users.find(u=>u.username===uname && u.password===pwd);
     if(!user){ authMsg.textContent="Invalid login"; return; }
-    if(!user.approved && !user.isAdmin){ authMsg.textContent="Awaiting admin approval"; return; }
     showMainPage(user);
   }
 
@@ -220,8 +221,137 @@ document.addEventListener('DOMContentLoaded', ()=>{
     loginPage.classList.remove('hidden'); mainPage.classList.add('hidden');
   }
 
-  // --- The rest of your previous JS code for posts, messages, photos, videos, insights, profile upload, admin approval, sharing --- 
+  // --- Posts ---
+  document.getElementById('submitPost').onclick = ()=>{
+    const content = document.getElementById('postContent').value.trim();
+    if(!content) return;
+    posts.push({author:currentUser.username,content,datetime:new Date().toLocaleString()});
+    saveAll();
+    document.getElementById('postContent').value='';
+    renderPosts();
+  }
 
+  function renderPosts(){
+    const container = document.getElementById('posts');
+    container.innerHTML='';
+    posts.slice().reverse().forEach(p=>{
+      const div=document.createElement('div');
+      div.className='post';
+      div.innerHTML=`<strong>${p.author}</strong> <em>${p.datetime}</em><p>${p.content}</p>`;
+      container.appendChild(div);
+    });
+  }
+
+  // --- Members ---
+  function renderMembers(){
+    const container=document.getElementById('memberList');
+    container.innerHTML='';
+    users.forEach(u=>{
+      const div=document.createElement('div');
+      div.className='post';
+      div.innerHTML=`<strong>${u.username}</strong>`;
+      container.appendChild(div);
+    });
+  }
+
+  // --- Messages ---
+  function renderMessages(){
+    const recipientSelect=document.getElementById('messageRecipient');
+    recipientSelect.innerHTML='';
+    users.filter(u=>u.username!==currentUser.username).forEach(u=>{
+      const opt=document.createElement('option'); opt.value=u.username; opt.textContent=u.username;
+      recipientSelect.appendChild(opt);
+    });
+    updateInbox();
+  }
+
+  document.getElementById('sendMessageBtn').onclick = ()=>{
+    const to = document.getElementById('messageRecipient').value;
+    const text = document.getElementById('messageContent').value.trim();
+    if(!text) return;
+    const recipient=users.find(u=>u.username===to);
+    recipient.messages.push({from:currentUser.username,text,date:new Date().toLocaleString()});
+    saveAll();
+    document.getElementById('messageContent').value='';
+    updateInbox();
+  }
+
+  function updateInbox(){
+    const inbox=document.getElementById('messageInbox');
+    inbox.innerHTML='';
+    currentUser.messages.slice().reverse().forEach(m=>{
+      const div=document.createElement('div');
+      div.className='message';
+      div.innerHTML=`<strong>${m.from}</strong> <em>${m.date}</em><p>${m.text}</p>`;
+      inbox.appendChild(div);
+    });
+  }
+
+  // --- Photos ---
+  document.getElementById('uploadPhotoBtn').onclick=()=>{
+    const file=document.getElementById('photoFile').files[0];
+    if(!file) return;
+    const reader=new FileReader();
+    reader.onload=()=>{ photos.push({author:currentUser.username,data:reader.result,caption:document.getElementById('photoCaption').value}); saveAll(); renderPhotos(); }
+    reader.readAsDataURL(file);
+  }
+
+  function renderPhotos(){
+    const container=document.getElementById('photoGallery');
+    container.innerHTML='';
+    photos.slice().reverse().forEach(p=>{
+      const div=document.createElement('div'); div.className='photoItem';
+      div.innerHTML=`<strong>${p.author}</strong><p>${p.caption}</p><img src="${p.data}" style="width:100%;">`;
+      container.appendChild(div);
+    });
+  }
+
+  // --- Videos ---
+  document.getElementById('uploadVideoBtn').onclick=()=>{
+    const file=document.getElementById('videoFile').files[0];
+    if(!file) return;
+    const reader=new FileReader();
+    reader.onload=()=>{ videos.push({author:currentUser.username,data:reader.result,caption:document.getElementById('videoCaption').value}); saveAll(); renderVideos(); }
+    reader.readAsDataURL(file);
+  }
+
+  function renderVideos(){
+    const container=document.getElementById('videoGallery');
+    container.innerHTML='';
+    videos.slice().reverse().forEach(v=>{
+      const div=document.createElement('div'); div.className='videoItem';
+      div.innerHTML=`<strong>${v.author}</strong><p>${v.caption}</p><video src="${v.data}" controls style="width:100%;"></video>`;
+      container.appendChild(div);
+    });
+  }
+
+  // --- Insights ---
+  function renderInsights(){
+    document.getElementById('insightsTabBtn').classList.remove('hidden');
+    const ctx=document.getElementById('insightsChart').getContext('2d');
+    new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels:users.map(u=>u.username),
+        datasets:[{
+          label:'Posts Count',
+          data:users.map(u=>posts.filter(p=>p.author===u.username).length),
+          backgroundColor:'rgba(255,99,132,0.5)'
+        }]
+      },
+      options:{ responsive:true, scales:{y:{beginAtZero:true}} }
+    });
+  }
+
+  // --- Share link ---
+  document.getElementById('shareBtn').onclick=()=>{
+    navigator.clipboard.writeText(window.location.href);
+    alert('Page link copied!');
+  }
+  document.getElementById('fbShareLink').onclick=()=>{
+    const fbLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+    window.open(fbLink,'_blank');
+  }
 });
 </script>
 </body>
