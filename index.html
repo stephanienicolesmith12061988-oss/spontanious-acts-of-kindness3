@@ -1,293 +1,562 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spontaneous Acts of Kindness</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spontaneous Acts of Kindness</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Nosifer&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nosifer&display=swap" rel="stylesheet">
 
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(120deg, #8e44ad, #3498db, #ff6b81);
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-  }
-  header {
-    background: linear-gradient(90deg, #9b59b6, #2980b9, #ff6b81);
-    padding: 15px;
-    text-align: center;
-    font-size: 2em;
-    font-weight: bold;
-    font-style: italic;
-    text-decoration: underline;
-    color: #4b0082;
-    font-family: 'Nosifer', cursive;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-  }
-  .container { padding: 20px; max-width: 900px; margin: auto; }
-  input, textarea, button, select { padding: 8px; margin: 5px 0; border-radius: 5px; border: none; }
-  input, textarea, select { width: 100%; }
-  button { background: #ff6b81; color: #ffffff; cursor: pointer; font-weight: bold; }
-  button:hover { opacity: 0.85; }
-  .hidden { display: none; }
-  .post, .photoItem, .videoItem { background: rgba(255,255,255,0.1); padding: 10px; margin: 10px 0; border-radius: 8px; }
-  .message { background: rgba(255,255,255,0.05); padding: 5px; margin: 5px 0; border-radius: 5px; }
-  #tabMenu button { margin-right: 10px; }
-  h2, h3 { color: #ffffff; }
-  hr { border: 1px solid rgba(255,255,255,0.3); }
-  #photoGallery, #videoGallery { display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px; }
-  img.profile { width:50px; height:50px; border-radius:50%; vertical-align:middle; margin-right:10px; }
-  #coverPhoto { width:100%; height:150px; object-fit:cover; border-radius:8px; margin-bottom:10px; }
-</style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #8e44ad, #3498db, #ff6b81);
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #9b59b6, #2980b9, #ff6b81);
+      padding: 15px;
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      font-style: italic;
+      text-decoration: underline;
+      color: #4b0082;
+      font-family: 'Nosifer', cursive;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    input, textarea, button, select {
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 5px;
+      border: none;
+    }
+
+    input, textarea, select {
+      width: 100%;
+    }
+
+    button {
+      background: #ff6b81;
+      color: #ffffff;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .hidden { display: none; }
+
+    .post, .photoItem, .videoItem {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+
+    .message {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 5px;
+      margin: 5px 0;
+      border-radius: 5px;
+    }
+
+    #tabMenu button {
+      margin-right: 10px;
+    }
+
+    h2, h3 { color: #ffffff; }
+    hr { border: 1px solid rgba(255, 255, 255, 0.3); }
+
+    #photoGallery, #videoGallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    img.profile {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+
+    #kindnessCover {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(90deg, #8e44ad, #ff6b81);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .kindness-icon {
+      width: 60px;
+      height: 60px;
+      margin-right: 15px;
+    }
+
+    .kindness-text {
+      color: #ffffff;
+      font-size: 2em;
+      font-family: 'Nosifer', cursive;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+  </style>
 </head>
 <body>
-<header>Spontaneous Acts of Kindness</header>
+  <header>Spontaneous Acts of Kindness</header>
 
-<div class="container">
-  <!-- Login/Register Page -->
-  <div id="loginPage">
-    <h2>Login / Register</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <label>Profile Picture:</label>
-    <input type="file" id="profilePicInput" accept="image/*">
-    <label>Cover Photo:</label>
-    <input type="file" id="coverPhotoInput" accept="image/*">
-    <button id="loginBtn">Login</button>
-    <button id="registerBtn">Register</button>
-    <p id="authMsg"></p>
-  </div>
-
-  <!-- Main Page -->
-  <div id="mainPage" class="hidden">
-    <img id="coverPhoto" src="">
-    <h2>Welcome, <span id="userWelcome"></span>!</h2>
-
-    <h3>Platform Rules:</h3>
-    <ul>
-      <li>No bullying or harassment</li>
-      <li>No spam, scams, or fraudulent links</li>
-      <li>No self-promotion or advertising</li>
-      <li>No offensive language or content</li>
-      <li>Respect others’ privacy</li>
-      <li>All posts must follow kindness guidelines</li>
-      <li>Admins approve all posts</li>
-    </ul>
-    <hr>
-
-    <!-- Tabs -->
-    <div id="tabMenu">
-      <button data-tab="feedTab">Feed</button>
-      <button data-tab="messagesTab">Messages</button>
-      <button data-tab="membersTab">Members</button>
-      <button data-tab="photosTab">Photos</button>
-      <button data-tab="videosTab">Videos</button>
-      <button data-tab="insightsTab" id="insightsTabBtn" class="hidden">Insights</button>
+  <div class="container">
+    <!-- Login / Register -->
+    <div id="loginPage">
+      <h2>Login / Register</h2>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <label>Profile Picture:</label>
+      <input type="file" id="profilePicInput" accept="image/*">
+      <label>Cover Photo (optional):</label>
+      <input type="file" id="coverPhotoInput" accept="image/*">
+      <button id="loginBtn">Login</button>
+      <button id="registerBtn">Register</button>
+      <p id="authMsg"></p>
     </div>
 
-    <!-- Feed -->
-    <div id="feedTab">
-      <h3>Create a Post</h3>
-      <textarea id="postContent" placeholder="What's on your mind?"></textarea>
-      <input type="file" id="postImage" accept="image/*">
-      <button id="submitPost">Submit Post</button>
-      <div id="posts"></div>
-    </div>
+    <!-- Main Page -->
+    <div id="mainPage" class="hidden">
+      <!-- Kindness Banner -->
+      <div id="kindnessCover">
+        <img src="https://www.clker.com/cliparts/q/h/2/Y/J/a/kindness-md.png" alt="Kindness" class="kindness-icon">
+        <span class="kindness-text">Kindness Matters</span>
+      </div>
 
-    <!-- Messages -->
-    <div id="messagesTab" class="hidden">
-      <h3>Private Messaging</h3>
-      <select id="messageRecipient"></select>
-      <textarea id="messageContent" placeholder="Write your message..."></textarea>
-      <button id="sendMessageBtn">Send Message</button>
-      <div id="messageInbox"></div>
-    </div>
+      <h2>Welcome, <span id="userWelcome"></span>!</h2>
 
-    <!-- Members -->
-    <div id="membersTab" class="hidden">
-      <h3>Members</h3>
-      <div id="memberList"></div>
-    </div>
+      <h3>Platform Rules:</h3>
+      <ul>
+        <li>No bullying or harassment</li>
+        <li>No spam, scams, or fraudulent links</li>
+        <li>No self-promotion or advertising</li>
+        <li>No offensive language or content</li>
+        <li>Respect others’ privacy</li>
+        <li>All posts must follow kindness guidelines</li>
+        <li>Admins approve all posts</li>
+      </ul>
+      <hr>
 
-    <!-- Photo Collections -->
-    <div id="photosTab" class="hidden">
-      <h3>Photo Collections</h3>
-      <input type="file" id="photoFile" accept="image/*">
-      <input type="text" id="photoCaption" placeholder="Add a caption (optional)">
-      <button id="uploadPhotoBtn">Upload Photo</button>
-      <div id="photoGallery"></div>
-    </div>
+      <div id="tabMenu">
+        <button data-tab="feedTab">Feed</button>
+        <button data-tab="messagesTab">Messages</button>
+        <button data-tab="membersTab">Members</button>
+        <button data-tab="photosTab">Photos</button>
+        <button data-tab="videosTab">Videos</button>
+        <button data-tab="insightsTab" id="insightsTabBtn" class="hidden">Insights</button>
+      </div>
 
-    <!-- Video Collections -->
-    <div id="videosTab" class="hidden">
-      <h3>Video Gallery</h3>
-      <input type="file" id="videoFile" accept="video/*">
-      <input type="text" id="videoCaption" placeholder="Add a caption (optional)">
-      <button id="uploadVideoBtn">Upload Video</button>
-      <div id="videoGallery"></div>
-    </div>
+      <div id="feedTab">
+        <h3>Create a Post</h3>
+        <textarea id="postContent" placeholder="What's on your mind?"></textarea>
+        <input type="file" id="postImage" accept="image/*">
+        <button id="submitPost">Submit Post</button>
+        <div id="posts"></div>
+      </div>
 
-    <!-- Insights -->
-    <div id="insightsTab" class="hidden">
-      <h3>Insights</h3>
-      <div id="insights"></div>
-    </div>
+      <div id="messagesTab" class="hidden">
+        <h3>Private Messaging</h3>
+        <select id="messageRecipient"></select>
+        <textarea id="messageContent" placeholder="Write your message..."></textarea>
+        <button id="sendMessageBtn">Send Message</button>
+        <div id="messageInbox"></div>
+      </div>
 
-    <!-- Admin Panel -->
-    <div id="adminPanel" class="hidden">
-      <h3>Admin Panel</h3>
-      <h4>Pending Posts</h4>
-      <div id="pendingPosts"></div>
-      <h4>Manage Admins</h4>
-      <select id="promoteUserSelect"></select>
-      <button id="promoteAdminBtn">Promote to Admin</button>
+      <div id="membersTab" class="hidden">
+        <h3>Members</h3>
+        <div id="memberList"></div>
+      </div>
+
+      <div id="photosTab" class="hidden">
+        <h3>Photo Collections</h3>
+        <input type="file" id="photoFile" accept="image/*">
+        <input type="text" id="photoCaption" placeholder="Add a caption (optional)">
+        <button id="uploadPhotoBtn">Upload Photo</button>
+        <div id="photoGallery"></div>
+      </div>
+
+      <div id="videosTab" class="hidden">
+        <h3>Video Gallery</h3>
+        <input type="file" id="videoFile" accept="video/*">
+        <input type="text" id="videoCaption" placeholder="Add a caption (optional)">
+        <button id="uploadVideoBtn">Upload Video</button>
+        <div id="videoGallery"></div>
+      </div>
+
+      <div id="insightsTab" class="hidden">
+        <h3>Insights</h3>
+        <div id="insights"></div>
+      </div>
+
+      <div id="adminPanel" class="hidden">
+        <h3>Admin Panel</h3>
+        <h4>Pending Posts</h4>
+        <div id="pendingPosts"></div>
+        <h4>Manage Admins</h4>
+        <select id="promoteUserSelect"></select>
+        <button id="promoteAdminBtn">Promote to Admin</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Data storage
-  let users = JSON.parse(localStorage.getItem('users')) || [];
-  let posts = JSON.parse(localStorage.getItem('posts')) || [];
-  let photos = JSON.parse(localStorage.getItem('photos')) || [];
-  let videos = JSON.parse(localStorage.getItem('videos')) || [];
-  let currentUser = null;
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    let posts = JSON.parse(localStorage.getItem('posts')) || [];
+    let photos = JSON.parse(localStorage.getItem('photos')) || [];
+    let videos = JSON.parse(localStorage.getItem('videos')) || [];
+    let currentUser = null;
 
-  const loginPage = document.getElementById('loginPage');
-  const mainPage = document.getElementById('mainPage');
-  const authMsg = document.getElementById('authMsg');
-  const userWelcome = document.getElementById('userWelcome');
-  const coverPhotoEl = document.getElementById('coverPhoto');
+    const loginPage = document.getElementById('loginPage');
+    const mainPage = document.getElementById('mainPage');
+    const authMsg = document.getElementById('authMsg');
+    const userWelcome = document.getElementById('userWelcome');
+    const profilePicInput = document.getElementById('profilePicInput');
+    const coverPhotoInput = document.getElementById('coverPhotoInput');
 
-  const saveUsers = ()=>localStorage.setItem('users', JSON.stringify(users));
-  const savePosts = ()=>localStorage.setItem('posts', JSON.stringify(posts));
-  const savePhotos = ()=>localStorage.setItem('photos', JSON.stringify(photos));
-  const saveVideos = ()=>localStorage.setItem('videos', JSON.stringify(videos));
+    function saveUsers() { localStorage.setItem('users', JSON.stringify(users)); }
+    function savePosts() { localStorage.setItem('posts', JSON.stringify(posts)); }
+    function savePhotos() { localStorage.setItem('photos', JSON.stringify(photos)); }
+    function saveVideos() { localStorage.setItem('videos', JSON.stringify(videos)); }
 
-  // Default admin
-  if(!users.find(u=>u.username==='stephaniensmith12688')){
-    users.push({username:'stephaniensmith12688', password:'NinjaGirl555:)', isAdmin:true, messages:[], profilePic:'', coverPhoto:''});
-    saveUsers();
-  }
-
-  function showMainPage(user){
-    currentUser = user;
-    loginPage.classList.add('hidden');
-    mainPage.classList.remove('hidden');
-    userWelcome.textContent = user.username;
-    coverPhotoEl.src = user.coverPhoto || '';
-    if(user.isAdmin) document.getElementById('adminPanel').classList.remove('hidden');
-    if(user.isAdmin) document.getElementById('insightsTabBtn').classList.remove('hidden');
-    renderPosts();
-    renderPendingPosts();
-    updateMessageRecipients();
-    renderInbox();
-    renderMembers();
-    renderPhotos();
-    renderVideos();
-    renderInsights();
-  }
-
-  // Auto-login admin
-  const adminUser = users.find(u=>u.username==='stephaniensmith12688');
-  if(adminUser) showMainPage(adminUser);
-
-  // Upload profile & cover photos
-  document.getElementById('profilePicInput').addEventListener('change', e=>{
-    const f=e.target.files[0]; if(!f) return;
-    const r=new FileReader();
-    r.onload=ev=>{ if(currentUser) currentUser.profilePic=ev.target.result; saveUsers(); renderMembers(); };
-    r.readAsDataURL(f);
-  });
-  document.getElementById('coverPhotoInput').addEventListener('change', e=>{
-    const f=e.target.files[0]; if(!f) return;
-    const r=new FileReader();
-    r.onload=ev=>{ if(currentUser) currentUser.coverPhoto=ev.target.result; saveUsers(); coverPhotoEl.src=currentUser.coverPhoto; };
-    r.readAsDataURL(f);
-  });
-
-  // Login/Register
-  document.getElementById('loginBtn').onclick = ()=>{
-    const uname=document.getElementById('username').value.trim();
-    const pwd=document.getElementById('password').value.trim();
-    const user=users.find(u=>u.username===uname && u.password===pwd);
-    if(!user){ authMsg.textContent="Invalid login"; return;}
-    showMainPage(user);
-  }
-
-  document.getElementById('registerBtn').onclick = ()=>{
-    const uname=document.getElementById('username').value.trim();
-    const pwd=document.getElementById('password').value.trim();
-    if(!uname||!pwd){ authMsg.textContent="Enter username & password"; return; }
-    if(users.find(u=>u.username===uname)){ authMsg.textContent="Username taken"; return; }
-    const profilePicInput=document.getElementById('profilePicInput').files[0];
-    const coverPhotoInput=document.getElementById('coverPhotoInput').files[0];
-    const newUser={username:uname,password:pwd,isAdmin:false,messages:[],profilePic:'',coverPhoto:''};
-    if(profilePicInput){ const r=new FileReader(); r.onload=ev=>{ newUser.profilePic=ev.target.result; saveUsers(); }; r.readAsDataURL(profilePicInput);}
-    if(coverPhotoInput){ const r=new FileReader(); r.onload=ev=>{ newUser.coverPhoto=ev.target.result; saveUsers(); }; r.readAsDataURL(coverPhotoInput);}
-    users.push(newUser); saveUsers();
-    showMainPage(newUser);
-  };
-
-  // Tabs
-  document.querySelectorAll('#tabMenu button').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('#feedTab, #messagesTab, #membersTab, #photosTab, #videosTab, #insightsTab').forEach(t=>t.classList.add('hidden'));
-      document.getElementById(btn.getAttribute('data-tab')).classList.remove('hidden');
-    });
-  });
-
-  // --------------------
-  // You can now reuse your previous full functions for:
-  // renderPosts(), addPost(), likePost(), addComment(), renderComments()
-  // renderPendingPosts(), approvePost(), deletePost()
-  // updateMessageRecipients(), renderInbox(), openMessageTo()
-  // renderPhotos(), uploadPhotoBtn onclick
-  // renderInsights()
-  // Admin promote
-  // The only changes are to add profile pictures to posts and member list
-  // --------------------
-
-  // Video tab functions
-  document.getElementById('uploadVideoBtn').onclick = ()=>{
-    const file = document.getElementById('videoFile').files[0];
-    const caption = document.getElementById('videoCaption').value.trim();
-    if(!file) return alert("Select a video");
-    const reader = new FileReader();
-    reader.onload = e => {
-      videos.push({id:Date.now(), user:currentUser.username, videoData:e.target.result, caption, date: new Date()});
-      saveVideos(); renderVideos();
-      document.getElementById('videoFile').value='';
-      document.getElementById('videoCaption').value='';
+    // Default admin
+    if (!users.find(u => u.username === 'stephaniensmith12688')) {
+      users.push({ username: 'stephaniensmith12688', password: 'NinjaGirl555:)', isAdmin: true, messages: [], profilePic: '', coverPhoto: '' });
+      saveUsers();
     }
-    reader.readAsDataURL(file);
-  }
 
-  function renderVideos(){
-    const div = document.getElementById('videoGallery');
-    div.innerHTML = '';
-    videos.slice().reverse().forEach(v=>{
-      const vd = document.createElement('div'); vd.className='videoItem';
-      vd.innerHTML = `
-        <video controls style="width:100%;border-radius:5px;">
-          <source src="${v.videoData}" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-        <p>${v.caption}</p>
-        <small>Uploaded by: ${v.user}</small>`;
-      div.appendChild(vd);
+    function showMainPage(user) {
+      currentUser = user;
+      loginPage.classList.add('hidden');
+      mainPage.classList.remove('hidden');
+      userWelcome.textContent = user.username;
+      if (user.isAdmin) document.getElementById('adminPanel').classList.remove('hidden');
+      if (user.isAdmin) document.getElementById('insightsTabBtn').classList.remove('hidden');
+      renderPosts();
+      renderPendingPosts();
+      updateMessageRecipients();
+      renderInbox();
+      renderMembers();
+      renderPhotos();
+      renderVideos();
+      renderInsights();
+    }
+
+    // Auto-login admin
+    const adminUser = users.find(u => u.username === 'stephaniensmith12688');
+    if (adminUser) showMainPage(adminUser);
+
+    // Login
+    document.getElementById('loginBtn').onclick = () => {
+      const uname = document.getElementById('username').value.trim();
+      const pwd = document.getElementById('password').value.trim();
+      const user = users.find(u => u.username === uname && u.password === pwd);
+      if (!user) { authMsg.textContent = "Invalid login"; return; }
+      showMainPage(user);
+    };
+
+    // Register
+    document.getElementById('registerBtn').onclick = () => {
+      const uname = document.getElementById('username').value.trim();
+      const pwd = document.getElementById('password').value.trim();
+      if (!uname || !pwd) { authMsg.textContent = "Enter username & password"; return; }
+      if (users.find(u => u.username === uname)) { authMsg.textContent = "Username taken"; return; }
+      const newUser = { username: uname, password: pwd, isAdmin: false, messages: [], profilePic: '', coverPhoto: '' };
+      users.push(newUser);
+      saveUsers();
+      showMainPage(newUser);
+    };
+
+    // Upload profile pic
+    profilePicInput.addEventListener('change', e => {
+      const f = e.target.files[0];
+      if (!f || !currentUser) return;
+      const r = new FileReader();
+      r.onload = ev => {
+        currentUser.profilePic = ev.target.result;
+        saveUsers();
+      };
+      r.readAsDataURL(f);
     });
-  }
 
-});
-</script>
+    // Upload cover photo (optional override)
+    coverPhotoInput.addEventListener('change', e => {
+      const f = e.target.files[0];
+      if (!f || !currentUser) return;
+      const r = new FileReader();
+      r.onload = ev => {
+        currentUser.coverPhoto = ev.target.result;
+        saveUsers();
+        // You could also swap out the kindness banner if you want
+      };
+      r.readAsDataURL(f);
+    });
+
+    // Tabs
+    document.querySelectorAll('#tabMenu button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#feedTab, #messagesTab, #membersTab, #photosTab, #videosTab, #insightsTab').forEach(t => t.classList.add('hidden'));
+        document.getElementById(btn.getAttribute('data-tab')).classList.remove('hidden');
+      });
+    });
+
+    // --- Post / Like / Comment logic (reuse from your older code) ---
+    document.getElementById('submitPost').onclick = () => {
+      const content = document.getElementById('postContent').value.trim();
+      const imgFile = document.getElementById('postImage').files[0];
+      if (!content && !imgFile) return alert("Enter text or select image");
+      if (imgFile) {
+        const r = new FileReader();
+        r.onload = e => {
+          addPost(content, e.target.result);
+        };
+        r.readAsDataURL(imgFile);
+      } else {
+        addPost(content, null);
+      }
+    }
+
+    function addPost(content, image) {
+      const post = { id: Date.now(), user: currentUser.username, content, image, likes: 0, comments: [], approved: currentUser.isAdmin };
+      posts.push(post);
+      savePosts();
+      renderPosts();
+      renderPendingPosts();
+      renderInsights();
+      document.getElementById('postContent').value = '';
+    }
+
+    function renderPosts() {
+      const div = document.getElementById('posts');
+      div.innerHTML = '';
+      posts.filter(p => p.approved).reverse().forEach(p => {
+        const pd = document.createElement('div');
+        pd.className = 'post';
+        pd.innerHTML = `<strong>${p.user}</strong>
+          <p>${p.content}</p>` +
+          (p.image ? `<img src="${p.image}" style="max-width:100%;">` : '') +
+          `<p>Likes: ${p.likes} <button onclick="likePost(${p.id})">Like</button></p>` +
+          `<div id="comments-${p.id}"></div>` +
+          `<input placeholder="Comment..." id="commentInput-${p.id}"><button onclick="addComment(${p.id})">Comment</button>`;
+        div.appendChild(pd);
+        renderComments(p.id);
+      });
+    }
+
+    window.likePost = id => {
+      const p = posts.find(x => x.id === id);
+      if (!p) return;
+      p.likes++;
+      savePosts();
+      renderPosts();
+      renderInsights();
+    }
+
+    window.addComment = id => {
+      const input = document.getElementById(`commentInput-${id}`);
+      if (!input.value) return;
+      const p = posts.find(x => x.id === id);
+      if (!p) return;
+      p.comments.push({ user: currentUser.username, text: input.value });
+      input.value = '';
+      savePosts();
+      renderComments(id);
+      renderInsights();
+    }
+
+    function renderComments(id) {
+      const div = document.getElementById(`comments-${id}`);
+      div.innerHTML = '';
+      const p = posts.find(x => x.id === id);
+      if (!p) return;
+      p.comments.forEach(c => {
+        const m = document.createElement('div');
+        m.className = 'message';
+        m.textContent = `${c.user}: ${c.text}`;
+        div.appendChild(m);
+      });
+    }
+
+    // --- Admin Panel / Pending Posts ---
+    function renderPendingPosts() {
+      if (!currentUser.isAdmin) return;
+      const div = document.getElementById('pendingPosts');
+      div.innerHTML = '';
+      posts.filter(p => !p.approved).forEach(p => {
+        const pd = document.createElement('div');
+        pd.className = 'post';
+        pd.innerHTML = `<strong>${p.user}</strong>
+          <p>${p.content}</p>` +
+          (p.image ? `<img src="${p.image}" style="max-width:100%;">` : '') +
+          `<button onclick="approvePost(${p.id})">Approve</button>` +
+          `<button onclick="deletePost(${p.id})">Delete</button>`;
+        div.appendChild(pd);
+      });
+    }
+
+    window.approvePost = id => {
+      const p = posts.find(x => x.id === id);
+      if (!p) return;
+      p.approved = true;
+      savePosts();
+      renderPosts();
+      renderPendingPosts();
+      renderInsights();
+    }
+
+    window.deletePost = id => {
+      posts = posts.filter(x => x.id !== id);
+      savePosts();
+      renderPosts();
+      renderPendingPosts();
+      renderInsights();
+    }
+
+    // --- Messaging ---
+    function updateMessageRecipients() {
+      const sel = document.getElementById('messageRecipient');
+      sel.innerHTML = '';
+      users.filter(u => u.username !== currentUser.username).forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.username;
+        opt.textContent = u.username;
+        sel.appendChild(opt);
+      });
+    }
+
+    document.getElementById('sendMessageBtn').onclick = () => {
+      const to = document.getElementById('messageRecipient').value;
+      const text = document.getElementById('messageContent').value.trim();
+      if (!text) return;
+      const recipient = users.find(u => u.username === to);
+      if (!recipient) return;
+      recipient.messages = recipient.messages || [];
+      recipient.messages.push({ from: currentUser.username, text });
+      saveUsers();
+      document.getElementById('messageContent').value = '';
+      renderInbox();
+    }
+
+    function renderInbox() {
+      const div = document.getElementById('messageInbox');
+      div.innerHTML = '<h4>Inbox:</h4>';
+      users.forEach(u => {
+        (u.messages || []).filter(m => m.to === currentUser.username || (m.to === undefined && u.username === currentUser.username)).forEach(m => {
+          const md = document.createElement('div');
+          md.className = 'message';
+          md.textContent = `${m.from}: ${m.text}`;
+          div.appendChild(md);
+        });
+      });
+    }
+
+    // --- Members ---
+    function renderMembers() {
+      const div = document.getElementById('memberList');
+      div.innerHTML = '';
+      users.filter(u => u.username !== currentUser.username).forEach(u => {
+        const md = document.createElement('div');
+        md.className = 'post';
+        md.innerHTML = `<img src="${u.profilePic || ''}" class="profile"><strong>${u.username}</strong> ${u.isAdmin ? '(Admin)' : ''} <button onclick="openMessageTo('${u.username}')">Message</button>`;
+        div.appendChild(md);
+      });
+    }
+
+    window.openMessageTo = uname => {
+      document.querySelector('[data-tab="messagesTab"]').click();
+      document.getElementById('messageRecipient').value = uname;
+      document.getElementById('messageContent').focus();
+    }
+
+    // --- Photos ---
+    document.getElementById('uploadPhotoBtn').onclick = () => {
+      const file = document.getElementById('photoFile').files[0];
+      const caption = document.getElementById('photoCaption').value.trim();
+      if (!file) return alert("Select a photo");
+      const r = new FileReader();
+      r.onload = e => {
+        photos.push({ id: Date.now(), user: currentUser.username, data: e.target.result, caption });
+        savePhotos();
+        renderPhotos();
+        document.getElementById('photoCaption').value = '';
+      };
+      r.readAsDataURL(file);
+    };
+
+    function renderPhotos() {
+      const div = document.getElementById('photoGallery');
+      div.innerHTML = '';
+      photos.slice().reverse().forEach(p => {
+        const d = document.createElement('div');
+        d.className = 'photoItem';
+        d.innerHTML = `<img src="${p.data}" style="width:100%;border-radius:5px;"><p>${p.caption}</p><small>By: ${p.user}</small>`;
+        div.appendChild(d);
+      });
+    }
+
+    // --- Videos ---
+    document.getElementById('uploadVideoBtn').onclick = () => {
+      const file = document.getElementById('videoFile').files[0];
+      const caption = document.getElementById('videoCaption').value.trim();
+      if (!file) return alert("Select a video");
+      const r = new FileReader();
+      r.onload = e => {
+        videos.push({ id: Date.now(), user: currentUser.username, data: e.target.result, caption });
+        saveVideos();
+        renderVideos();
+        document.getElementById('videoCaption').value = '';
+      };
+      r.readAsDataURL(file);
+    };
+
+    function renderVideos() {
+      const div = document.getElementById('videoGallery');
+      div.innerHTML = '';
+      videos.slice().reverse().forEach(v => {
+        const d = document.createElement('div');
+        d.className = 'videoItem';
+        d.innerHTML = `<video controls style="width:100%;border-radius:5px;"><source src="${v.data}"></video><p>${v.caption}</p><small>By: ${v.user}</small>`;
+        div.appendChild(d);
+      });
+    }
+
+    // --- Insights ---
+    function renderInsights() {
+      if (!currentUser.isAdmin) return;
+      const div = document.getElementById('insights');
+      div.innerHTML = `<p>Total Users: ${users.length}</p>
+        <p>Total Posts: ${posts.length}</p>
+        <p>Approved Posts: ${posts.filter(p => p.approved).length}</p>
+        <p>Pending Posts: ${posts.filter(p => !p.approved).length}</p>
+        <p>Total Photos: ${photos.length}</p>
+        <p>Total Videos: ${videos.length}</p>`;
+    }
+
+    // Initially render members
+    renderMembers();
+  });
+  </script>
 </body>
 </html>
-
-
-
-
