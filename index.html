@@ -167,22 +167,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
     saveAll();
   }
 
-  // --- AUTO-LOGIN ADMIN ON THIS COMPUTER ONLY ---
-  const AUTO_ADMIN_KEY = 'autoAdminLogged';
-  if(!localStorage.getItem(AUTO_ADMIN_KEY)){
-    const admin = users.find(u => u.username==='stephaniensmith12688');
-    if(admin){
-      currentUser = admin;
+  // Auto-login admin on this computer
+  const localAdmin = users.find(u => u.username==='stephaniensmith12688');
+  if(localAdmin){
+      currentUser = localAdmin;
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      localStorage.setItem(AUTO_ADMIN_KEY,'true');
-    }
-  }
-
-  if(currentUser){
-    showMainPage(currentUser);
-  } else {
-    loginPage.classList.remove('hidden');
-    mainPage.classList.add('hidden');
   }
 
   // Tab switching
@@ -206,7 +195,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     renderInsights();
   }
 
-  // --- Registration (auto-approved) ---
+  // Register (auto-approve)
   document.getElementById('registerBtn').onclick = ()=>{
     const uname = document.getElementById('username').value.trim();
     const pwd = document.getElementById('password').value.trim();
@@ -217,7 +206,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     document.getElementById('username').value=''; document.getElementById('password').value='';
   }
 
-  // --- Login ---
+  // Login
   document.getElementById('loginBtn').onclick = ()=>{
     const uname = document.getElementById('username').value.trim();
     const pwd = document.getElementById('password').value.trim();
@@ -226,7 +215,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     showMainPage(user);
   }
 
-  // --- Logout ---
+  // Logout
   document.getElementById('logoutBtn').onclick = ()=>{
     currentUser=null; localStorage.removeItem('currentUser');
     loginPage.classList.remove('hidden'); mainPage.classList.add('hidden');
@@ -301,14 +290,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // --- Photos ---
   document.getElementById('uploadPhotoBtn').onclick=()=>{
     const file=document.getElementById('photoFile').files[0];
-    if(!file || !currentUser) return;
+    if(!file) return;
     const reader=new FileReader();
     reader.onload=()=>{ photos.push({author:currentUser.username,data:reader.result,caption:document.getElementById('photoCaption').value}); saveAll(); renderPhotos(); }
     reader.readAsDataURL(file);
   }
 
   function renderPhotos(){
-    if(!currentUser) return;
     const container=document.getElementById('photoGallery');
     container.innerHTML='';
     photos.slice().reverse().forEach(p=>{
@@ -321,14 +309,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // --- Videos ---
   document.getElementById('uploadVideoBtn').onclick=()=>{
     const file=document.getElementById('videoFile').files[0];
-    if(!file || !currentUser) return;
+    if(!file) return;
     const reader=new FileReader();
     reader.onload=()=>{ videos.push({author:currentUser.username,data:reader.result,caption:document.getElementById('videoCaption').value}); saveAll(); renderVideos(); }
     reader.readAsDataURL(file);
   }
 
   function renderVideos(){
-    if(!currentUser) return;
     const container=document.getElementById('videoGallery');
     container.innerHTML='';
     videos.slice().reverse().forEach(v=>{
