@@ -170,6 +170,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
     saveAll();
   }
 
+  // --- AUTO LOGIN FOR THIS COMPUTER ---
+  const localAdmin = users.find(u => u.username==='stephaniensmith12688');
+  if(localAdmin){
+      currentUser = localAdmin;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  }
+
   // Tab switching
   document.querySelectorAll('#tabMenu button[data-tab]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -179,26 +186,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 
   // Show main page
-  function showMainPage(user){
-    currentUser = user; saveAll();
-    loginPage.classList.add('hidden'); mainPage.classList.remove('hidden');
-    userWelcome.textContent = user.username;
-
-    // profile preview
-    if(currentUser.profilePic) document.getElementById('profilePreview').src = currentUser.profilePic;
-    if(currentUser.coverPhoto) document.getElementById('coverPreview').src = currentUser.coverPhoto;
-
-    if(user.isAdmin){
-      document.getElementById('adminPanel').classList.remove('hidden');
-      document.getElementById('insightsTabBtn').classList.remove('hidden');
-      renderPendingUsers();
-    }
-    renderPosts(); renderMembers(); renderPhotos(); renderVideos(); renderInbox(); renderInsights();
-    updateMessageRecipients();
+  if(currentUser){ 
+    showMainPage(currentUser); 
+  } else { 
+    loginPage.classList.remove('hidden'); 
+    mainPage.classList.add('hidden'); 
   }
-
-  if(currentUser && (currentUser.approved || currentUser.isAdmin)){ showMainPage(currentUser); }
-  else { loginPage.classList.remove('hidden'); mainPage.classList.add('hidden'); }
 
   // Register
   document.getElementById('registerBtn').onclick = ()=>{
@@ -217,7 +210,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const pwd = document.getElementById('password').value.trim();
     const user = users.find(u=>u.username===uname && u.password===pwd);
     if(!user){ authMsg.textContent="Invalid login"; return; }
-    if(!user.approved && !user.isAdmin){ authMsg.textContent="Awaiting admin approval"; return; } // <-- FIXED
+    if(!user.approved && !user.isAdmin){ authMsg.textContent="Awaiting admin approval"; return; }
     showMainPage(user);
   }
 
@@ -227,8 +220,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     loginPage.classList.remove('hidden'); mainPage.classList.add('hidden');
   }
 
-  // Remaining code (posts, messages, photos, videos, insights, admin approval, profile uploads, share links) remains the same...
-  // [The rest of your previous JS code continues here unchanged]
+  // --- The rest of your previous JS code for posts, messages, photos, videos, insights, profile upload, admin approval, sharing --- 
 
 });
 </script>
